@@ -1,0 +1,10 @@
+{
+  "name": "kerwal-data-table-example",
+  "version": "1.0.0",
+  "description": "an example of using @kerwal/data-table",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
