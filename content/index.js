@@ -6,6 +6,9 @@ require.config({
 });
 
 requirejs(['tabulator', 'moment', 'table-config'], function (Tabulator, moment, table_config) {
+    if(!table_config) table_config = {};
+    // override ajaxURL
+    table_config.ajaxURL = '/table-data';
     var table = new Tabulator("#data-table", table_config);
     table.on("cellEdited", function (cell) {
         // dont send requests for cells that didn't actually change
