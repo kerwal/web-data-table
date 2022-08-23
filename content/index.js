@@ -37,4 +37,20 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
         // TODO check for errors?
         fetch('/table-data', { method: 'PATCH', body });
     });
+    table.on("rowAdded", function(row){
+        // TODO add row to table-data on server
+        //      - server should handle indices being unique
+
+        // let body = new URLSearchParams();
+        // body.append('jsonpath', `$[?(@.id==${cell.getData().id})].${cell.getField()}`);
+        // body.append('value', cellValue);
+        
+        // TODO check for errors?
+        // fetch('/table-data', { method: 'PATCH', body });
+
+        // TODO set 'id' to what /table-data returned
+    });
+    document.getElementById('add-row-btn').onclick = () => {
+        table.addData([{}]);
+    }
 });
