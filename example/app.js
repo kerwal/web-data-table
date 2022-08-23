@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const { KerwalDataTableServer } = require('..');
+const { WebDataTableServer } = require('..');
 
-let server = new KerwalDataTableServer();
+let server = new WebDataTableServer();
 
 server.start();
 
