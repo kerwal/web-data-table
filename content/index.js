@@ -22,6 +22,8 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
     if(!table_config) table_config = {};
     // override ajaxURL
     table_config.ajaxURL = '/table-data';
+    // override footerElement
+    table_config.footerElement = '#data-table-footer';
     var table = new Tabulator("#data-table", table_config);
     table.on("cellEdited", function (cell) {
         // dont send requests for cells that didn't actually change
