@@ -22,6 +22,15 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
     if(!table_config) table_config = {};
     // override ajaxURL
     table_config.ajaxURL = '/table-data';
+    // override paste action to prompt for action from user,
+    //  but only when clipboardPasteAction === 'prompt'
+    if (table_config.clipboardPasteAction === 'prompt') {
+        table_config.clipboardPasteAction = function (rowData) {
+            // TODO prompt the user to choose which action to perform with the paste
+            //      - insert (addData), update (updateorAddData), or replace (setData)
+            return this.table.updateData(rowData);
+        }
+    }
     var table = new Tabulator("#data-table", table_config);
     table.on("cellEdited", function (cell) {
         // dont send requests for cells that didn't actually change
