@@ -28,6 +28,10 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
         table_config.clipboardPasteAction = function (rowData) {
             // TODO prompt the user to choose which action to perform with the paste
             //      - insert (addData), update (updateorAddData), or replace (setData)
+            const modal = bootstrap.Modal.getOrCreateInstance('#pasteActionModal');
+            // TODO subscribe to the hidden event or rig the Paste button in the Modal
+            //      to complete the paste action
+            modal.show();
             return this.table.updateData(rowData);
         }
     }
