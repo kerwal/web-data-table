@@ -23,11 +23,20 @@
                 </div>
                 <div class="modal-body">
                     Which paste action would you like?
-                    ...
+                    <div class="btn-group" role="group" id="pasteActionOption">
+                        <input type="radio" class="btn-check" name="pasteAction" id="append" autocomplete="off" checked>
+                        <label class="btn btn-outline-dark" for="append">Append</label>
+
+                        <input type="radio" class="btn-check" name="pasteAction" id="update" autocomplete="off">
+                        <label class="btn btn-outline-dark" for="update">Update</label>
+
+                        <input type="radio" class="btn-check" name="pasteAction" id="replace" autocomplete="off">
+                        <label class="btn btn-outline-dark" for="replace">Replace</label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary">Paste</button>
+                    <button id="pasteActionAcceptButton" type="button" class="btn btn-primary">Paste</button>
                 </div>
             </div>
         </div>

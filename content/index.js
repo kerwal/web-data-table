@@ -24,15 +24,42 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
     table_config.ajaxURL = '/table-data';
     // override paste action to prompt for action from user,
     //  but only when clipboardPasteAction === 'prompt'
+
+    // TODO not working, fix it!
     if (table_config.clipboardPasteAction === 'prompt') {
         table_config.clipboardPasteAction = function (rowData) {
             // TODO prompt the user to choose which action to perform with the paste
             //      - insert (addData), update (updateorAddData), or replace (setData)
+            var _table = this.table;
+
             const modal = bootstrap.Modal.getOrCreateInstance('#pasteActionModal');
+
+            document.getElementById('pasteActionAcceptButton').onclick = (event) => {
+                // find the checked option
+                const radioButtons = document.querySelectorAll('input[name="pasteAction"]');
+                let selectedPasteAction = "none";
+                for (const radioButton of radioButtons) {
+                    if (radioButton.checked) {
+                        selectedPasteAction = radioButton.value;
+                        break;
+                    }
+                }
+                switch (selectedPasteAction) {
+                    case "append":
+                        _table.addData(rowData);
+                        break;
+                    case "update":
+                        _table.updateData(rowData);
+                        break;
+                    case "replace":
+                        _table.setData(rowData);
+                        break;
+                }
+                modal.hide();
+            };
             // TODO subscribe to the hidden event or rig the Paste button in the Modal
             //      to complete the paste action
             modal.show();
-            return this.table.updateData(rowData);
         }
     }
     var table = new Tabulator("#data-table", table_config);
@@ -46,6 +73,6 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
         // body.append('jsonpath', `$[?(@.id==${cell.getData().id})].${cell.getField()}`);
         // body.append('value', cellValue);
         // TODO check for errors?
-        fetch('/table-data', { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id: cell.getData().id, field: cell.getField(), value: cellValue }) });
+        fetch('/table-data', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: cell.getData().id, field: cell.getField(), value: cellValue }) });
     });
 });
