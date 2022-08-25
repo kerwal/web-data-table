@@ -6,7 +6,6 @@
 // defined in the AMD modular format
 define(function() {
     return {
-        ajaxURL: "/table-data",
         height: "100%", // set height of table to enable virtual DOM
         layout: "fitColumns", //fit columns to width of table (optional)
         columns: [ //Define Table Columns

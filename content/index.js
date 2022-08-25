@@ -22,6 +22,8 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
     if (!table_config) table_config = {};
     // override ajaxURL
     table_config.ajaxURL = '/table-data';
+    // override footerElement
+    table_config.footerElement = '#data-table-footer';
     var table = new Tabulator("#data-table", table_config);
     table.on("cellEdited", function (cell) {
         // dont send requests for cells that didn't actually change
@@ -33,6 +35,15 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
         // body.append('jsonpath', `$[?(@.id==${cell.getData().id})].${cell.getField()}`);
         // body.append('value', cellValue);
         // TODO check for errors?
-        fetch('/table-data', { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id: cell.getData().id, field: cell.getField(), value: cellValue }) });
+        fetch('/table-data', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: cell.getData().id, field: cell.getField(), value: cellValue }) });
     });
+    document.getElementById('add-row-btn').onclick = () => {
+        fetch('/table-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+            .then((response) => response.json())
+            .then((body) => {
+                if (body.success && body.id !== undefined) {
+                    table.addData({ id: body.id });
+                }
+            });
+    }
 });
