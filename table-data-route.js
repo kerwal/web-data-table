@@ -57,21 +57,6 @@ module.exports = (config = {}) => {
     // req.body.field=...
     // req.body.value=...
 
-    // pass the change to JSONPath on the cached table object to make the change
-    // let result = { jsonpath: `$[?(@.id==${req.body.id})].${req.body.field}`, value: req.body.value, found: false, success: false };
-    // JSONPath({
-    //   path: result.jsonpath, json: table_data, callback: (value, type, payload) => {
-    //     // console.log(value, type, payload);
-    //     result.found = true;
-    //     if (type === 'value') {
-    //       payload.parent[payload.parentProperty] = req.body.value;
-    //       result.success = true;
-    //       // record the change requests
-    //       recent_changes.push(result);
-    //     }
-    //   }
-    // });
-
     try {
       let result = { ...req.body, found: false, success: false };
       let found_row = table_data.find((row) => row.id === req.body.id);
