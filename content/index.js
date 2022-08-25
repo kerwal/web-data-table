@@ -24,6 +24,24 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
     table_config.ajaxURL = '/table-data';
     // override footerElement
     table_config.footerElement = '#data-table-footer';
+
+    // append button column
+    if (!table_config.columns || !Array.isArray(table_config.columns)) table_config.columns = [];
+    table_config.columns.push({
+        formatter: (cell, formatterParams, onRendered) => {
+            return "<i class='bi-trash3-fill'></i>";
+        }, width: 40, hozAlign: "center", cellClick: (e, cell) => {
+            let id = cell.getData().id;
+            fetch('/table-data', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) })
+            .then((response) => response.json())
+            .then((body) => {
+                if (body.success) {
+                    cell.getRow().delete();
+                }
+            });
+        }
+    });
+
     var table = new Tabulator("#data-table", table_config);
     table.on("cellEdited", function (cell) {
         // dont send requests for cells that didn't actually change
