@@ -35,22 +35,15 @@ requirejs(['tabulator', 'bootstrap', 'table-config'], function (Tabulator, boots
         // body.append('jsonpath', `$[?(@.id==${cell.getData().id})].${cell.getField()}`);
         // body.append('value', cellValue);
         // TODO check for errors?
-        fetch('/table-data', { method: 'PATCH', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id: cell.getData().id, field: cell.getField(), value: cellValue }) });
-    });
-    table.on("rowAdded", function(row){
-        // TODO add row to table-data on server
-        //      - server should handle indices being unique
-
-        // let body = new URLSearchParams();
-        // body.append('jsonpath', `$[?(@.id==${cell.getData().id})].${cell.getField()}`);
-        // body.append('value', cellValue);
-        
-        // TODO check for errors?
-        // fetch('/table-data', { method: 'PATCH', body });
-
-        // TODO set 'id' to what /table-data returned
+        fetch('/table-data', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: cell.getData().id, field: cell.getField(), value: cellValue }) });
     });
     document.getElementById('add-row-btn').onclick = () => {
-        table.addData([{}]);
+        fetch('/table-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+            .then((response) => response.json())
+            .then((body) => {
+                if (body.success && body.id !== undefined) {
+                    table.addData({ id: body.id });
+                }
+            });
     }
 });
