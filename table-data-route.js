@@ -110,4 +110,6 @@ module.exports = (config = {}) => {
     }
   });
   return router;
+
+  // TODO need paths for bulk operations, like full-replace, many-update, many-replace, many-delete, many-append
 }
