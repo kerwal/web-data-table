@@ -1,0 +1,1 @@
+curl --data-binary "@./new-data.json" -X PUT -H "Content-Type: application/json" http://localhost:3000/table-data

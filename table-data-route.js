@@ -64,6 +64,9 @@ module.exports = (config = {}) => {
         result.found = true;
         found_row[req.body.field] = req.body.value;
         result.success = true;
+        // copy the found_row reference to recent_changes so the table will be saved to disk
+        recent_changes.push(found_row);
+        // TODO properly describe the change for logging in the future
       }
       console.log(result);
       res.json(result);
@@ -87,6 +90,9 @@ module.exports = (config = {}) => {
       // insert the row into the cache
       table_data.push(new_row);
       console.log(table_data);
+      // copy the new_row reference to recent_changes so the table will be saved to disk
+      recent_changes.push(new_row);
+      // TODO properly describe the change for logging in the future
       // respond with success and the new_id field
       res.json({ success: true, id: new_row.id });
     } catch (error) {
@@ -94,7 +100,29 @@ module.exports = (config = {}) => {
     }
   });
 
-  // D - DELETE
+  router.put('/', function (req, res, next) {
+    // the page requested to fully replace the whole table
+    // the array in the body is all of the rows to put in the table
+    try {
+      if (!req.body) throw new Error('body is empty');
+      if (!Array.isArray(req.body)) throw new Error('body is not an Array');
+
+      // assign .id on each row
+      req.body.forEach((row, id) => row.id = id);
+      // replace the table in cache
+      table_data = req.body;
+      // copy the whole table reference to recent_changes so the table will be saved to disk
+      // TODO properly describe the change for logging in the future
+      recent_changes.push(table_data);
+      // return just the ids?
+      res.json({ success: true, ids: table_data.map((row) => row.id) });
+    } catch (error) {
+      // respond with failure and the error
+      res.json({ success: false, error });
+    }
+  });
+
+  // D - DELETE (row)
   router.delete('/', function (req, res, next) {
     // the page requested to delete a row from the table
     // the id of the row is in req.body.id
@@ -102,7 +130,7 @@ module.exports = (config = {}) => {
       let row_index = table_data.findIndex((row) => row.id === req.body.id);
       if (row_index > -1)
         table_data.splice(row_index, 1);
-      // respond with success even i f the row wasn't found
+      // respond with success even if the row wasn't found
       res.json({ success: true });
     } catch (error) {
       // respond with failure and the error
@@ -111,5 +139,12 @@ module.exports = (config = {}) => {
   });
   return router;
 
-  // TODO need paths for bulk operations, like full-replace, many-update, many-replace, many-delete, many-append
+  // TODO need paths for bulk operations, like full-replace, many-update, many-delete, many-append
+  // full-replace: replaces whole table with what is in the request body
+  //    [{ id: n, prop1: val1, prop2: val2, prop3: val3 }] <-- sets table to exactly as the body
+  // many-update: replaces individual values for each object in the request body
+  //    [{ id: n, prop: val }, { id: n+1, prop: val, prop2: val2 }] <-- only sets properties as defined in the body
+  // many-delete: removes the rows specified by id in the request body
+  //    [{ id: n }, { id: n+1 }, { id: n+2 }, { id: n+3 }]
+  // many-append: pushes the table 
 }
